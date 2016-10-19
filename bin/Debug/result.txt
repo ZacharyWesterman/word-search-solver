@@ -1,0 +1,190 @@
+Loading "Word Search.txt" and displaying grid:
+
+  ABCDEFGHIJKLMN
+  --------------
+A|MASCIENTISTOEK
+B|OMDBKOOBCIMOCD
+C|GYNRKONPSPRHAY
+D|OWLEONARDESNPT
+E|SCNADSETLEHBSI
+F|EADVAIENJSHIPS
+G|DDODTYPAOOOGHR
+H|CYESKNREALWBYE
+I|ENSECCEONNAASV
+J|APENNYHNEGRNII
+K|ZTIWOLOWTHDGCN
+L|ECNEICSSNCTNSU
+M|AGRPPYSHELDONP
+N|EENTETMEWNTIST
+
+Loading Dictionary...Done.
+Finding all words in grid, with 3+ characters...
+
+Found "ASCI" at position [B, A], going left.
+Found "AMY" at position [B, A], going down.
+Found "SCI" at position [C, A], going left.
+Found "SCIENT" at position [C, A], going left.
+Found "SCIENTIST" at position [C, A], going left.
+Found "SAM" at position [C, A], going right.
+Found "ION" at position [E, A], going left-down.
+Found "NON" at position [G, A], going down.
+Found "TOO" at position [H, A], going right-down.
+Found "SIP" at position [J, A], going down.
+Found "SIT" at position [J, A], going right.
+Found "TOE" at position [K, A], going left.
+Found "BOO" at position [H, B], going right.
+Found "BOOK" at position [H, B], going right.
+Found "MRS" at position [K, B], going down.
+Found "OAT" at position [L, B], going left-down.
+Found "ORE" at position [L, B], going right-down.
+Found "CAP" at position [M, B], going down.
+Found "CAPS" at position [M, B], going down.
+Found "COM" at position [M, B], going right.
+Found "COMIC" at position [M, B], going right.
+Found "DAN" at position [N, B], going right-down.
+Found "YWCA" at position [B, C], going down.
+Found "ROSE" at position [D, C], going left-down.
+Found "KEN" at position [E, C], going right-down.
+Found "PAS" at position [H, C], going right-down.
+Found "PASADENA" at position [H, C], going right-down.
+Found "POE" at position [H, C], going right-up.
+Found "ROE" at position [K, C], going left-up.
+Found "HAY" at position [L, C], going left.
+Found "ACE" at position [M, C], going up.
+Found "OWL" at position [A, D], going left.
+Found "LEO" at position [C, D], going left.
+Found "LEON" at position [C, D], going left.
+Found "LEONARD" at position [C, D], going left.
+Found "EON" at position [D, D], going left.
+Found "NARD" at position [F, D], going left.
+Found "NOEL" at position [F, D], going right.
+Found "ANON" at position [G, D], going up.
+Found "REI" at position [H, D], going right-down.
+Found "REIT" at position [H, D], going right-down.
+Found "RAN" at position [H, D], going right.
+Found "DES" at position [I, D], going left.
+Found "PACE" at position [M, D], going up.
+Found "TAO" at position [N, D], going right-up.
+Found "SAO" at position [A, E], going left-down.
+Found "CAD" at position [B, E], going down.
+Found "ADD" at position [D, E], going right-down.
+Found "DIP" at position [E, E], going left-down.
+Found "DEN" at position [E, E], going right-up.
+Found "SET" at position [F, E], going left.
+Found "SEA" at position [F, E], going left-down.
+Found "SAD" at position [F, E], going right-down.
+Found "SAP" at position [F, E], going left-up.
+Found "BIG" at position [L, E], going down.
+Found "SPA" at position [M, E], going up.
+Found "SPACE" at position [M, E], going up.
+Found "DOE" at position [C, F], going down.
+Found "DOES" at position [C, F], going down.
+Found "ADEN" at position [E, F], going right-down.
+Found "ADO" at position [E, F], going up.
+Found "ASAP" at position [E, F], going left-up.
+Found "ITS" at position [F, F], going right-down.
+Found "NOL" at position [H, F], going left-down.
+Found "JOAN" at position [I, F], going down.
+Found "JAR" at position [I, F], going right-down.
+Found "SHIP" at position [J, F], going left.
+Found "SHIPS" at position [J, F], going left.
+Found "SOB" at position [J, F], going left-down.
+Found "SOBS" at position [J, F], going left-down.
+Found "SOL" at position [J, F], going down.
+Found "SEE" at position [J, F], going up.
+Found "SEEP" at position [J, F], going up.
+Found "HIP" at position [K, F], going left.
+Found "HIPS" at position [K, F], going left.
+Found "HOW" at position [K, F], going down.
+Found "PHYS" at position [M, F], going down.
+Found "PHYSIC" at position [M, F], going down.
+Found "PHYSICS" at position [M, F], going down.
+Found "DANE" at position [A, G], going left-up.
+Found "ODD" at position [C, G], going right.
+Found "TAD" at position [E, G], going up.
+Found "TIE" at position [E, G], going left-up.
+Found "TIER" at position [E, G], going left-up.
+Found "TIERS" at position [E, G], going left-up.
+Found "YTD" at position [F, G], going right.
+Found "YET" at position [F, G], going left-up.
+Found "PEN" at position [G, G], going left-down.
+Found "PRE" at position [G, G], going down.
+Found "AEON" at position [H, G], going down.
+Found "ARC" at position [H, G], going right-down.
+Found "ANT" at position [H, G], going up.
+Found "ONE" at position [I, G], going right-up.
+Found "REV" at position [N, G], going down.
+Found "RYA" at position [N, G], going right-down.
+Found "YES" at position [B, H], going left.
+Found "ESE" at position [C, H], going down.
+Found "SEN" at position [D, H], going down.
+Found "REAL" at position [G, H], going left.
+Found "LONE" at position [J, H], going right-up.
+Found "LOS" at position [J, H], going up.
+Found "LOSE" at position [J, H], going up.
+Found "WAIN" at position [K, H], going left-down.
+Found "WAR" at position [K, H], going down.
+Found "WARD" at position [K, H], going down.
+Found "BYE" at position [L, H], going left.
+Found "BAN" at position [L, H], going down.
+Found "BANG" at position [L, H], going down.
+Found "BAG" at position [L, H], going right-down.
+Found "NEW" at position [B, I], going left-down.
+Found "SEC" at position [C, I], going left.
+Found "CEO" at position [F, I], going left.
+Found "NET" at position [I, I], going down.
+Found "NEWS" at position [J, I], going right-down.
+Found "NEWSY" at position [J, I], going right-down.
+Found "ANN" at position [K, I], going right.
+Found "ANNO" at position [K, I], going right.
+Found "ALONE" at position [K, I], going right-up.
+Found "SIC" at position [M, I], going down.
+Found "APE" at position [A, J], going left.
+Found "PENN" at position [B, J], going left.
+Found "PENNY" at position [B, J], going left.
+Found "PIE" at position [B, J], going left-down.
+Found "PSST" at position [B, J], going left-up.
+Found "EPA" at position [C, J], going right.
+Found "ENC" at position [C, J], going right-up.
+Found "NEED" at position [E, J], going right-up.
+Found "HER" at position [G, J], going up.
+Found "GEN" at position [J, J], going right.
+Found "GAB" at position [J, J], going left-up.
+Found "RNA" at position [K, J], going right-up.
+Found "RAW" at position [K, J], going up.
+Found "RAY" at position [K, J], going left-up.
+Found "NAB" at position [L, J], going up.
+Found "TEE" at position [B, K], going left-up.
+Found "IWO" at position [C, K], going left.
+Found "INC" at position [C, K], going left-up.
+Found "WEPT" at position [D, K], going down.
+Found "WIT" at position [D, K], going right.
+Found "LOW" at position [F, K], going left.
+Found "LIP" at position [F, K], going right-down.
+Found "TWO" at position [I, K], going right.
+Found "TEN" at position [I, K], going up.
+Found "DRAW" at position [K, K], going up.
+Found "CRT" at position [B, L], going left-down.
+Found "ERE" at position [D, L], going right-down.
+Found "CON" at position [F, L], going right-up.
+Found "CONS" at position [F, L], going right-up.
+Found "CONN" at position [F, L], going left-up.
+Found "SCIENCE" at position [G, L], going right.
+Found "SHE" at position [H, L], going down.
+Found "SOY" at position [H, L], going right-up.
+Found "THE" at position [K, L], going right-up.
+Found "THEORY" at position [K, L], going right-up.
+Found "SOT" at position [M, L], going right-down.
+Found "UNIV" at position [N, L], going up.
+Found "UNIVERSITY" at position [N, L], going up.
+Found "REO" at position [C, M], going left-up.
+Found "PEW" at position [D, M], going up.
+Found "PION" at position [E, M], going up.
+Found "HELD" at position [H, M], going left.
+Found "DON" at position [K, M], going left.
+Found "NOD" at position [M, M], going right.
+Found "PUN" at position [N, M], going up.
+Found "MEW" at position [G, N], going left.
+Found "WENT" at position [I, N], going up.
+
+Done.
