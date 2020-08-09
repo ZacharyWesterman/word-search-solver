@@ -42,6 +42,7 @@ public:
 	int matchCount() const;
 
 	bool select(int index, int color);
+	z::core::string<> getMatch(int index) const;
 
 	void print(z::core::outputStream& output) const;
 

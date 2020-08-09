@@ -109,7 +109,6 @@ int wordSearch::matchCount() const
 
 bool wordSearch::select(int index, int color)
 {
-	if ((index >= matches.length()) || (index < 0)) return false;
 	if (index == selectedMatch) return true;
 
 	//reset old match
@@ -119,12 +118,29 @@ bool wordSearch::select(int index, int color)
 		setHighlight(match.pos, match.dir, match.len, oldColor);
 	}
 
+	if ((index >= matches.length()) || (index < 0)) return false;
+
 	auto match = matches[index];
 	oldColor = highlighted[match.pos];
 	setHighlight(match.pos, match.dir, match.len, color);
 
 	selectedMatch = index;
 	return true;
+}
+
+z::core::string<> wordSearch::getMatch(int index) const
+{
+	z::core::string<> thisMatch;
+	if ((index < matches.length()) && (index >= 0))
+	{
+		auto match = matches[index];
+		for (int i=0; i<match.len; ++i)
+		{
+			thisMatch += data[match.pos + match.dir*i];
+		}
+	}
+
+	return thisMatch;
 }
 
 void wordSearch::print(z::core::outputStream& output) const
@@ -184,7 +200,7 @@ int wordSearch::find(const z::core::string<>& text, int occurrence, int color)
 
 	for (int i=0; i<dataWidth*dataHeight; ++i)
 	{
-		if (data[i] != text[0]) continue;
+		if (z::core::toUpper(data[i]) != z::core::toUpper(text[0])) continue;
 
 		//if character matches the first letter, check surrounding letters
 		if (text.length() > 1)
@@ -202,7 +218,7 @@ int wordSearch::find(const z::core::string<>& text, int occurrence, int color)
 				//match as many characters as possible
 				for (int k=1; k<text.length(); ++k)
 				{
-					if (data[i+d*k] != text[k])
+					if (z::core::toUpper(data[i+d*k]) != z::core::toUpper(text[k]))
 					{
 						matched = false;
 						break;
@@ -287,9 +303,17 @@ int wordSearch::scan(const z::util::dictionary& dict, int length, int color)
 					yend += dirs[j][1];
 					if (!dict.narrow(&range, data[yend*dataWidth + xend])) break;
 				}
-				if (range.exhausted) continue; //not close to a word that matches the minimum, look in next direction.
+				if (range.exhausted || !range.isWord) continue; //not a word that matches the minimum, look in next direction.
 
 				matchType thisMatch = {pos, directions[j], length};
+
+				//TEMP: print the match
+				// for (int xx=0; xx<length; ++xx)
+				// {
+				// 	std::cout << (char)data[pos + (directions[j] * xx)];
+				// }
+				// std::cout << std::endl;
+
 				matches.add(thisMatch);
 				setHighlight(pos, directions[j], length, color);
 			}

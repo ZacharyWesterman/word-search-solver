@@ -23,10 +23,10 @@ endif
 
 CFLAGS = -I"../libzed" -std=c++11 -fPIC
 
-LFLAGS = -lzed
 ifeq ($(OS),Windows_NT)
-LFLAGS += -L.
+LFLAGS = -L.
 endif
+LFLAGS += -lzed $(shell pkg-config --cflags --libs opencv)
 
 CC = g++
 LN = g++
