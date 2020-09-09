@@ -223,6 +223,7 @@ int main(int argc, char** argv)
 	{
 		cv::Mat im (image, rect);
 		ocr->SetImage(im.data, im.cols, im.rows, 3, im.step);
+		ocr->SetSourceResolution(70);
 		wordBank.add(ocr->GetUTF8Text());
 	}
 
@@ -252,6 +253,7 @@ int main(int argc, char** argv)
 
 
 		ocr->SetImage(im.data, im.cols, im.rows, 3, im.step);
+		ocr->SetSourceResolution(70);
 		letters.add(ocr->GetUTF8Text());
 
 		// cv::namedWindow("Puzzle", cv::WINDOW_AUTOSIZE);
