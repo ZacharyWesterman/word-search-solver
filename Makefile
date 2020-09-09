@@ -26,7 +26,7 @@ CFLAGS = -I"../libzed" -std=c++11 -fPIC
 ifeq ($(OS),Windows_NT)
 LFLAGS = -L.
 endif
-LFLAGS += -lzed $(shell pkg-config --cflags --libs opencv)
+LFLAGS += -lzed $(shell pkg-config --cflags --libs tesseract opencv)
 
 CC = g++
 LN = g++
