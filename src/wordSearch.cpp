@@ -143,6 +143,24 @@ z::core::string<> wordSearch::getMatch(int index) const
 	return thisMatch;
 }
 
+wordMatch wordSearch::getMatchData(int index) const
+{
+	wordMatch thisMatch;
+
+	if ((index < matches.length()) && (index >= 0))
+	{
+		auto match = matches[index];
+		thisMatch.x = match.pos % dataWidth;
+		thisMatch.y = match.pos / dataWidth;
+
+		int t = match.pos + ((match.len - 1) * match.dir);
+		thisMatch.width = t % dataWidth;
+		thisMatch.height = t / dataWidth;
+	}
+
+	return thisMatch;
+}
+
 void wordSearch::print(z::core::outputStream& output) const
 {
 	for (int y=0; y<dataHeight; ++y)
@@ -183,6 +201,7 @@ void wordSearch::print(z::core::outputStream& output) const
 
 int wordSearch::find(const z::core::string<>& text, int occurrence, int color)
 {
+	matches.clear();
 	if (!text.length()) return 0; //null string never matches any
 
 	const int directions[8] = {
@@ -194,6 +213,17 @@ int wordSearch::find(const z::core::string<>& text, int occurrence, int color)
 		-dataWidth + 1,
 		1,
 		dataWidth + 1,
+	};
+
+	const int dir_x[8] = {
+		-1,
+		-1,
+		-1,
+		0,
+		0,
+		1,
+		1,
+		1,
 	};
 
 	int matchCount = 0;
@@ -210,7 +240,7 @@ int wordSearch::find(const z::core::string<>& text, int occurrence, int color)
 				int d = directions[j];
 
 				//check X boundary
-				int xdir = (j < 3)*-1 + (j > 5);
+				int xdir = dir_x[j];
 				int xend = (i % dataWidth) + (xdir * (text.length() - 1));
 				if ((xend < 0) || (xend >= dataWidth)) continue;
 
@@ -228,6 +258,7 @@ int wordSearch::find(const z::core::string<>& text, int occurrence, int color)
 				{
 					++matchCount;
 					setHighlight(i,d,text.length(),color);
+					matches.add({i, d, text.length()});
 				}
 			}
 		}
@@ -235,6 +266,7 @@ int wordSearch::find(const z::core::string<>& text, int occurrence, int color)
 		{
 			++matchCount;
 			setHighlight(i,0,1,color);
+			matches.add({i,0,1});
 		}
 	}
 

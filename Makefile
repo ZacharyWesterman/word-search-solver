@@ -1,6 +1,6 @@
 NAME = wssolve
 
-SRCS = $(wildcard *.cpp)
+SRCS = $(wildcard src/*.cpp)
 OBJS = $(patsubst %.cpp,%.o,$(SRCS))
 
 ARCH = $(shell g++ -dumpmachine)
@@ -21,7 +21,7 @@ else
 RM = rm -f
 endif
 
-CFLAGS = -I"../libzed" -std=c++11 -fPIC
+CFLAGS = -std=c++11 -fPIC
 
 ifeq ($(OS),Windows_NT)
 LFLAGS = -L.
@@ -39,10 +39,10 @@ $(NAME): $(OBJS)
 %.o: %.cpp %.hpp
 	$(CC) $(CFLAGS) -o $@ -c $<
 
-main.o: main.cpp
+src/main.o: src/main.cpp
 	$(CC) $(CFLAGS) -o $@ -c $<
 
 clean:
-	$(RM) *.o $(NAME)
+	$(RM) $(OBJS) $(NAME)
 
 .PHONY: default clean

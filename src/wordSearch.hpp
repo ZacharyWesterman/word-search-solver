@@ -5,6 +5,14 @@
 #include <z/util/dictionary.hpp>
 #include <z/core/array.hpp>
 
+struct wordMatch
+{
+	int x;
+	int y;
+	int width;
+	int height;
+};
+
 class wordSearch
 {
 private:
@@ -43,6 +51,8 @@ public:
 
 	bool select(int index, int color);
 	z::core::string<> getMatch(int index) const;
+
+	wordMatch getMatchData(int index) const;
 
 	void print(z::core::outputStream& output) const;
 
