@@ -48,6 +48,56 @@ int main(int argc, char** argv)
 	getImageRects(image, wordBank_rects, letter_rects);
 	(zstring("Scanned image in ") + (timer.millis() / 1000.0) + "s").writeln(stdout);
 
+
+
+	// int last = -1;
+	// for (int i=0; i<letter_rects.size(); ++i)
+	// {
+	// 	auto rect = letter_rects[i];
+	// 	int tot = 256 * 3;
+	// 	int r(0), g(0), b(0);
+	//
+	// 	int pos = i * tot / letter_rects.size();
+	// 	// pos *= 5;
+	// 	// pos %= tot;
+	//
+	// 	if (pos < 256)
+	// 	{
+	// 		r = pos;
+	// 		b = 256 - pos;
+	// 	}
+	// 	else if (pos < 256 * 2)
+	// 	{
+	// 		r = 256 * 2 - pos;
+	// 		g = pos - 256;
+	// 	}
+	// 	else
+	// 	{
+	// 		g = 256 * 3 - pos;
+	// 		b = pos - 256 * 2;
+	// 	}
+	//
+	// 	cv::rectangle(image, rect, cv::Scalar(b, g, r), 2);
+	//
+	// 	if (last + 1 != i)
+	// 	{
+	// 		cv::putText(
+	// 			image,
+	// 			"?",
+	// 			cv::Point(letter_rects[i].x + letter_rects[i].width / 2, letter_rects[i].y + letter_rects[i].height),
+	// 			cv::FONT_HERSHEY_DUPLEX,
+	// 			0.5,
+	// 			cv::Scalar(0,0,0),
+	// 			1
+	// 		);
+	// 	}
+	// 	last ++;
+	// }
+	// cv::namedWindow("Puzzle", cv::WINDOW_FREERATIO);
+	// cv::imshow("Puzzle", image);
+	// cv::waitKey(0);
+	// return 0;//TEMP
+
 	timer.reset();
 	z::core::array<z::core::string<z::utf8> > wordBank = ocrWords(image, wordBank_rects);
 	(zstring("Word recognition took ") + (timer.millis() / 1000.0) + "s").writeln(stdout);
@@ -55,6 +105,8 @@ int main(int argc, char** argv)
 	timer.reset();
 	z::core::array<z::core::string<z::utf8> > letters = ocrLetters(image, letter_rects);
 	(zstring("Letter recognition took ") + (timer.millis() / 1000.0) + "s").writeln(stdout);
+
+	int fontScale = (image.rows > 1024) ? 2 : 1;
 
 	//generate puzzle stream
 	zstring letterPool;
@@ -73,7 +125,17 @@ int main(int argc, char** argv)
 			letterPool.append('\n');
 		}
 
-		letterPool.append(letters[i]);
+		// cv::putText(
+		// 	image,
+		// 	letters[i].cstring(),
+		// 	cv::Point(letter_rects[i].x + letter_rects[i].width / 2, letter_rects[i].y + letter_rects[i].height),
+		// 	cv::FONT_HERSHEY_DUPLEX,
+		// 	0.25 * fontScale,
+		// 	cv::Scalar(0,0,200),
+		// 	1
+		// );
+
+		letterPool.append(zstring(letters[i][0]));
 		int letterSize = (letter_rects[i].width + letter_rects[i].height) / 2;
 		if (maxLetterSize < letterSize) maxLetterSize = letterSize;
 	}
@@ -96,8 +158,23 @@ int main(int argc, char** argv)
 	}
 
 
+	//Generate word bank overlay
+	for (int i=0; i<wordBank_rects.size(); ++i)
+	{
+		cv::rectangle(image, wordBank_rects[i], color(i), 2);
 
-	int fontScale = (image.rows > 1024) ? 2 : 1;
+		(zstring(i)+": " + wordBank[i]).writeln(stdout);
+
+		// cv::putText(
+		// 	image,
+		// 	wordBank[i].cstring(),
+		// 	cv::Point(wordBank_rects[i].x - (20 * fontScale + 5), wordBank_rects[i].y + wordBank_rects[i].height),
+		// 	cv::FONT_HERSHEY_DUPLEX,
+		// 	0.5 * fontScale,
+		// 	CV_RGB(0,0,0),
+		// 	1
+		// );
+	}
 
 	//Solve and generate solution overlay
 	cv::Rect r1 = letter_rects[0];
@@ -114,9 +191,27 @@ int main(int argc, char** argv)
 	int xdiff = (xmax - xmin) / (letterRows - 1);
 	int ydiff = (ymax - ymin) / (letterCols - 1);
 	int thickness = 2 + (image.rows > 1024);
+
+	grid.print(stdout);
+
+	int located = 0;
 	for (int i=0; i<wordBank.length(); ++i)
 	{
 		auto matches = grid.find(wordBank[i]);
+		if (matches) ++located;
+		else
+		{
+			cv::putText(
+				image,
+				"?",
+				cv::Point(wordBank_rects[i].x - thickness * 3, wordBank_rects[i].y + (wordBank_rects[i].height / 2)),
+				cv::FONT_HERSHEY_DUPLEX,
+				0.5 * fontScale,
+				CV_RGB(0,0,0),
+				1
+			);
+		}
+
 		for (int k=0; k<matches; ++k)
 		{
 			auto match = grid.getMatchData(k);
@@ -137,23 +232,7 @@ int main(int argc, char** argv)
 		}
 	}
 
-	//Generate word bank overlay
-	for (int i=0; i<wordBank_rects.size(); ++i)
-	{
-		cv::rectangle(image, wordBank_rects[i], color(i), 2);
-
-		/*
-		cv::putText(
-			image,
-			zpath(i).cstring(),
-			cv::Point(wordBank_rects[i].x - (20 * fontScale + 5), wordBank_rects[i].y + wordBank_rects[i].height),
-			cv::FONT_HERSHEY_DUPLEX,
-			0.5 * fontScale,
-			CV_RGB(0,0,0),
-			1
-		);
-		*/
-	}
+	(zstring("Found ")+located+" of the "+wordBank.length()+" detected words.").writeln(stdout);
 
 	//Resize image to something manageable
 	if (image.rows > 1024)
@@ -171,6 +250,7 @@ int main(int argc, char** argv)
 
 	//Open window and display
 	cv::namedWindow("Puzzle", cv::WINDOW_AUTOSIZE);
+	// cv::resizeWindow("Puzzle", 800, 800);
 	cv::imshow("Puzzle", image);
 	cv::waitKey(0);
 }

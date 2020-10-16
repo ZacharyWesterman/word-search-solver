@@ -36,20 +36,33 @@ static bool rectContains(const cv::Rect& rect1, const cv::Rect& rect2) noexcept
 
 static bool rectCompare_r(const cv::Rect& l, const cv::Rect& r) noexcept
 {
+	// return l.x * l.y < r.x * r.y;
+
 	cv::Point l_c (l.x + l.width / 2, l.y + l.height / 2);
 	cv::Point r_c (r.x + r.width / 2, r.y + r.height / 2);
-	float cellSize = l.height / 2;
 
-	if (l.height < 20)
-	{
-		cellSize = 10;
-	}
+	//
+	float cellSize = l.height * 2 / 3;
+	//
+	// // if (l.height < 30)
+	// // {
+	// // 	cellSize = 10;
+	// // }
+	//
+	float lCell = roundf(l.y / cellSize);
+	float rCell = roundf(r.y / cellSize);
 
-	float lCell = roundf(l_c.y / cellSize);
-	float rCell = roundf(r_c.y / cellSize);
-	if(lCell == rCell) return l_c.x < r_c.x;
+	if (abs(l.y - r.y) > abs(l.x - r.x)) return l.y < r.y;
+	// return l_c.x < r_c.x;
+
+	if(lCell == rCell) return l.x < r.x;
 	return (lCell < rCell);
 }
+
+// static void sortLetters(std::vector<cv::Rect>& letters) noexcept
+// {
+//
+// }
 
 cv::Rect increase(cv::Rect rect, int amount) noexcept
 {
@@ -223,4 +236,15 @@ void getImageRects(cv::Mat& image, std::vector<cv::Rect>& wordBank, std::vector<
 	//sort rectangles by position
 	std::sort(letters.begin(), letters.end(), rectCompare_r);
 	std::sort(wordBank.begin(), wordBank.end(), rectCompare_r);
+
+	//merge any word bank items that are touching horizontally
+	for (int i=wordBank.size()-1; i>0; --i)
+	{
+		if (((wordBank[i-1].x + wordBank[i-1].width) > wordBank[i].x) && (wordBank[i-1].x < wordBank[i].x))
+		{
+			wordBank[i-1].width = (wordBank[i].x + wordBank[i].width) - wordBank[i-1].x;
+			wordBank[i-1].height = (wordBank[i].y + wordBank[i].height) - wordBank[i-1].y;
+			wordBank.erase(wordBank.begin() + i, wordBank.begin() + i + 1);
+		}
+	}
 }
