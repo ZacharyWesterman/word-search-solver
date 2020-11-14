@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 	}
 
 	wordSearch grid;
-	image = processImage(image, grid);
+	image = processImage(image, grid, true, true);
 
 	//Open window and display
 	cv::namedWindow("Puzzle", cv::WINDOW_AUTOSIZE);

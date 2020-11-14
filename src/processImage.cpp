@@ -106,7 +106,7 @@ cv::Mat processImage(const cv::Mat& inputImage, wordSearch& grid, bool resize, b
 	int ydiff = (ymax - ymin) / (letterCols - 1);
 	int thickness = 2 + (image.rows > 1024);
 
-	grid.print(stdout);
+	if (log) grid.print(stdout);
 
 	int located = 0;
 	for (int i=0; i<wordBank.length(); ++i)
