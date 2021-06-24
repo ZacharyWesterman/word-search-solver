@@ -31,6 +31,10 @@ LFLAGS += -lzed $(shell pkg-config --cflags --libs tesseract opencv)
 CC = g++
 LN = g++
 
+DICTOUT = data/us.dict
+DICTIN = /usr/share/dict/words
+UTILNAME = src/utils/dict
+
 default: $(NAME)
 
 $(NAME): $(OBJS)
@@ -42,7 +46,14 @@ $(NAME): $(OBJS)
 src/main.o: src/main.cpp
 	$(CC) $(CFLAGS) -o $@ -c $<
 
+$(UTILNAME): $(UTILNAME).cpp
+	$(CC) $(CFLAGS) -lzed -o $@ $<
+
+$(DICTOUT): $(UTILNAME) $(DICTIN)
+	chmod +x $<
+	./$^
+
 clean:
-	$(RM) $(OBJS) $(NAME)
+	$(RM) $(OBJS) $(NAME) $(DICTOUT) $(UTILNAME)
 
 .PHONY: default clean

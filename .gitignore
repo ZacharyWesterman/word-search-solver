@@ -1,3 +1,5 @@
 *.o
 wssolve
 images/
+*.dict
+dict
