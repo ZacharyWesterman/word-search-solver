@@ -4,7 +4,7 @@
 #include <z/util.hpp>
 
 //Image processing
-#include "processImage.hpp"
+#include "cv/processImage.hpp"
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -14,7 +14,7 @@
 #include <thread>
 
 //Word search
-#include "wordSearch.hpp"
+#include "shared/wordSearch.hpp"
 
 int main(int argc, char** argv)
 {

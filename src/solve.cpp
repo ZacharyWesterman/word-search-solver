@@ -1,7 +1,7 @@
 #include <z/all.hpp>
 #include <cereal/archives/binary.hpp>
 
-#include "wordSearch.hpp"
+#include "shared/wordSearch.hpp"
 
 int main(int argc, char** argv)
 {

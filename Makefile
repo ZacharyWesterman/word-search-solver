@@ -1,6 +1,7 @@
-NAME = wssolve
+NAME = wssolve-gui
+TXTNAME = wssolve-cli
 
-SRCS = $(wildcard src/*.cpp)
+SRCS = $(wildcard src/cv/*.cpp src/shared/*.cpp)
 OBJS = $(patsubst %.cpp,%.o,$(SRCS))
 
 ARCH = $(shell g++ -dumpmachine)
@@ -22,11 +23,7 @@ RM = rm -f
 endif
 
 CFLAGS = -std=c++17 -fPIC
-
-ifeq ($(OS),Windows_NT)
-LFLAGS = -L.
-endif
-LFLAGS += -lzed #$(shell pkg-config --cflags --libs tesseract opencv)
+LFLAGS += -lzed $(shell pkg-config --cflags --libs tesseract opencv)
 
 CC = g++
 LN = g++
@@ -35,9 +32,9 @@ DICTOUT = data/us.dict
 DICTIN = /usr/share/dict/words
 UTILNAME = src/utils/dict
 
-default: $(NAME)
+default: $(NAME) $(DICTOUT) $(UTILNAME) $(TXTNAME)
 
-$(NAME): $(OBJS)
+$(NAME): src/main.o $(OBJS)
 	$(LN) -o $@ $^ $(LFLAGS)
 
 %.o: %.cpp %.hpp
@@ -49,17 +46,18 @@ src/main.o: src/main.cpp
 src/solve.o: src/solve.cpp
 	$(CC) $(CFLAGS) -o $@ -c $<
 
-solve: src/solve.o src/wordSearch.o
-	$(LN) -o $@ $^ $(LFLAGS)
+$(TXTNAME): src/solve.o src/shared/wordSearch.o
+	$(LN) -o $@ $^ -lzed
 
 $(UTILNAME): $(UTILNAME).cpp
 	$(CC) $(CFLAGS) -lzed -o $@ $<
 
 $(DICTOUT): $(UTILNAME) $(DICTIN)
+	mkdir -p data
 	chmod +x $<
 	./$^
 
 clean:
-	$(RM) $(OBJS) $(NAME) $(DICTOUT) $(UTILNAME)
+	$(RM) $(NAME) $(DICTOUT) $(UTILNAME) $(TXTNAME) src/*.o src/utils/*.o $(OBJS)
 
 .PHONY: default clean
