@@ -21,12 +21,12 @@ else
 RM = rm -f
 endif
 
-CFLAGS = -std=c++11 -fPIC
+CFLAGS = -std=c++17 -fPIC
 
 ifeq ($(OS),Windows_NT)
 LFLAGS = -L.
 endif
-LFLAGS += -lzed $(shell pkg-config --cflags --libs tesseract opencv)
+LFLAGS += -lzed #$(shell pkg-config --cflags --libs tesseract opencv)
 
 CC = g++
 LN = g++
@@ -45,6 +45,12 @@ $(NAME): $(OBJS)
 
 src/main.o: src/main.cpp
 	$(CC) $(CFLAGS) -o $@ -c $<
+
+src/solve.o: src/solve.cpp
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+solve: src/solve.o src/wordSearch.o
+	$(LN) -o $@ $^ $(LFLAGS)
 
 $(UTILNAME): $(UTILNAME).cpp
 	$(CC) $(CFLAGS) -lzed -o $@ $<

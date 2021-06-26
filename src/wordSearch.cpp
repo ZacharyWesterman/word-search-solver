@@ -156,6 +156,9 @@ wordMatch wordSearch::getMatchData(int index) const
 		int t = match.pos + ((match.len - 1) * match.dir);
 		thisMatch.width = t % dataWidth;
 		thisMatch.height = t / dataWidth;
+
+		thisMatch.direction = match.dir;
+		thisMatch.text = getMatch(index);
 	}
 
 	return thisMatch;
@@ -284,7 +287,7 @@ void wordSearch::setHighlight(int pos, int dir, int len, int color)
 	}
 }
 
-int wordSearch::scan(const z::util::dictionary& dict, int length, int color)
+int wordSearch::scan(const z::util::dictionary& dict, int minLength, int maxLength, int color)
 {
 	const int dirs[8][2] = {
 		{-1,-1},
@@ -307,47 +310,53 @@ int wordSearch::scan(const z::util::dictionary& dict, int length, int color)
 		-dataWidth,
 	};
 
-	int matchCount = 0;
-
-	for (int y=0; y<dataHeight; ++y)
+	if (maxLength < minLength)
 	{
-		for (int x=0; x<dataWidth; ++x)
+		maxLength = (dataWidth > dataHeight) ? dataWidth : dataHeight;
+	}
+
+	for (int length = minLength; length <= maxLength; ++length)
+	{
+		for (int y=0; y<dataHeight; ++y)
 		{
-			auto rangeMain = dict.range();
-			int pos = y*dataWidth + x;
-			if (!dict.narrow(&rangeMain, data[pos])) continue;
-
-			for (int j=0; j<8; ++j) //go in circle
+			for (int x=0; x<dataWidth; ++x)
 			{
-				//shortcut, require the minimum length before we begin to check.
-				int xend = x + dirs[j][0] * (length - 1);
-				int yend = y + dirs[j][1] * (length - 1);
-				if ((xend >= dataWidth) || (xend < 0)) continue;
-				if ((yend >= dataHeight) || (yend < 0)) continue;
+				auto rangeMain = dict.range();
+				int pos = y*dataWidth + x;
+				if (!dict.narrow(&rangeMain, data[pos])) continue;
 
-				//narrow down words to those of minimum required length
-				auto range = rangeMain;
-				xend = x;
-				yend = y;
-				for (int i=1; i<length; ++i)
+				for (int j=0; j<8; ++j) //go in circle
 				{
-					xend += dirs[j][0];
-					yend += dirs[j][1];
-					if (!dict.narrow(&range, data[yend*dataWidth + xend])) break;
+					//shortcut, require the minimum length before we begin to check.
+					int xend = x + dirs[j][0] * (length - 1);
+					int yend = y + dirs[j][1] * (length - 1);
+					if ((xend >= dataWidth) || (xend < 0)) continue;
+					if ((yend >= dataHeight) || (yend < 0)) continue;
+
+					//narrow down words to those of minimum required length
+					auto range = rangeMain;
+					xend = x;
+					yend = y;
+					for (int i=1; i<length; ++i)
+					{
+						xend += dirs[j][0];
+						yend += dirs[j][1];
+						if (!dict.narrow(&range, data[yend*dataWidth + xend])) break;
+					}
+					if (range.exhausted || !range.isWord) continue; //not a word that matches the minimum, look in next direction.
+
+					matchType thisMatch = {pos, directions[j], length};
+
+					//TEMP: print the match
+					// for (int xx=0; xx<length; ++xx)
+					// {
+					// 	std::cout << (char)data[pos + (directions[j] * xx)];
+					// }
+					// std::cout << std::endl;
+
+					matches.add(thisMatch);
+					setHighlight(pos, directions[j], length, color);
 				}
-				if (range.exhausted || !range.isWord) continue; //not a word that matches the minimum, look in next direction.
-
-				matchType thisMatch = {pos, directions[j], length};
-
-				//TEMP: print the match
-				// for (int xx=0; xx<length; ++xx)
-				// {
-				// 	std::cout << (char)data[pos + (directions[j] * xx)];
-				// }
-				// std::cout << std::endl;
-
-				matches.add(thisMatch);
-				setHighlight(pos, directions[j], length, color);
 			}
 		}
 	}

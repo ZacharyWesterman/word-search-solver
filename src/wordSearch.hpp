@@ -11,6 +11,8 @@ struct wordMatch
 	int y;
 	int width;
 	int height;
+	int direction;
+	z::core::string<> text;
 };
 
 class wordSearch
@@ -59,5 +61,5 @@ public:
 
 	int find(const z::core::string<>& text, int occurrence = 0, int color = 8);
 
-	int scan(const z::util::dictionary& dict, int length, int color = 8);
+	int scan(const z::util::dictionary& dict, int minLength, int maxLength = 0, int color = 8);
 };
