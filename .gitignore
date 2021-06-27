@@ -1,6 +1,7 @@
 *.o
-wssolve
+wssolve-*
 images/
 *.dict
 dict
 solve
+*.png
