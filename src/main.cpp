@@ -14,8 +14,9 @@
 #include <thread>
 
 //Image processing
-#include "cv/pointsOfInterest.hpp"
 #include "cv/colors.hpp"
+#include "cv/pointsOfInterest.hpp"
+#include "cv/connectNearest.hpp"
 
 //Word search
 // #include "shared/wordSearch.hpp"
@@ -48,6 +49,27 @@ int main(int argc, char** argv)
 	for (auto& rect : rects)
 	{
 		cv::rectangle(image, rect, color(i++), 2);
+	}
+
+	//draw lines connecting rectangles
+	auto connections = connectNearest(rects);
+	for (int i = 0; i < connections.length(); ++i)
+	{
+		for (int k : connections[i])
+		{
+			int fromX = rects[i].x + (rects[i].width / 2);
+			int fromY = rects[i].y + (rects[i].height / 2);
+			int toX = rects[k].x + (rects[k].width / 2);
+			int toY = rects[k].y + (rects[k].height / 2);
+
+			cv::arrowedLine(
+				image,
+				cv::Point(fromX, fromY),
+				cv::Point(toX, toY),
+				color(i),
+				2
+			);
+		}
 	}
 
 	//Resize image to something manageable
