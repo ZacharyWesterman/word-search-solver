@@ -1,6 +1,7 @@
 #include "wordSearch.hpp"
 
 #include <z/core/array.hpp>
+#include <z/core/memoryStream.hpp>
 
 wordSearch::wordSearch()
 {
@@ -56,6 +57,12 @@ bool wordSearch::load(z::core::inputStream& input)
 	}
 
 	return true;
+}
+
+bool wordSearch::load(const zstring& input)
+{
+	z::core::memoryStream stream (input.wstring(), input.length());
+	return load(stream);
 }
 
 bool wordSearch::loaded() const
@@ -202,7 +209,7 @@ void wordSearch::print(z::core::outputStream& output) const
 	}
 }
 
-int wordSearch::find(const z::core::string<>& text, int occurrence, int color)
+int wordSearch::find(const z::core::string<>& text, int color)
 {
 	matches.clear();
 	if (!text.length()) return 0; //null string never matches any

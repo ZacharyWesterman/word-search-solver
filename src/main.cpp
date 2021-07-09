@@ -17,9 +17,17 @@
 #include "cv/colors.hpp"
 #include "cv/pointsOfInterest.hpp"
 #include "cv/connectNearest.hpp"
+#include "cv/groupBySpread.hpp"
+#include "cv/buildWordRects.hpp"
+#include "cv/buildLetterRects.hpp"
+#include "cv/sortVertically.hpp"
+#include "cv/encircle.hpp"
+
+//Text recognition
+#include "cv/OCR.hpp"
 
 //Word search
-// #include "shared/wordSearch.hpp"
+#include "shared/wordSearch.hpp"
 
 int main(int argc, char** argv)
 {
@@ -42,60 +50,58 @@ int main(int argc, char** argv)
 		return 2;
 	}
 
+	//get points of interest
 	auto rects = pointsOfInterest(image);
 
-	//draw rectangles
-	// int i=0;
-	// for (auto& rect : rects)
-	// {
-	// 	cv::rectangle(image, rect, color(i++), 2);
-	// }
-
-	//draw lines connecting rectangles
+	//Connect points of interest in order horizontally.
 	auto connections = connectNearest(rects);
-	"{"_u8.writeln(stdout);
-	for (auto& i : connections)
+
+	//get groups that are most likely in the word bank.
+	auto wordRects = buildWordRects(rects, groupBySpread(rects, connections, false));
+
+	//get groups that are most likely inside the puzzle
+	auto letterRects = buildLetterRects(rects, sortVertically(rects, groupBySpread(rects, connections, true)));
+
+	//Start up text recognition
+	tesseract::TessBaseAPI* ocr = new tesseract::TessBaseAPI();
+	ocr->Init(NULL, "eng", tesseract::OEM_LSTM_ONLY);
+
+	//Build puzzle text
+	zstring letterText;
+	for (const auto& row : letterRects)
 	{
-		"  {"_u8.write(stdout);
-		for (auto k : i) (" "_u8 + k).write(stdout);
-		" }"_u8.writeln(stdout);
+		auto letters = ocrLetters(ocr, image, row);
+		if (letterText.length()) letterText += "\n";
+		letterText += z::core::join(letters, "");
 	}
-	"}"_u8.writeln(stdout);
-	for (int i = 0; i < connections.length(); ++i)
+	std::cout << letterText << std::endl << std::endl;
+
+	//Build word bank
+	auto words = ocrWords(ocr, image, wordRects);
+	// std::cout << z::core::join(words, "\n") << std::endl;
+
+	//Done with text recognition
+	ocr->End();
+
+	//init word search
+	wordSearch wordsearch;
+	wordsearch.load(letterText);
+
+	//highlight word bank and successful matches
+	for (int i=0; i<words.length(); ++i)
 	{
-		// if (i != connections.length()-4) continue;
-		auto& row = connections[i];
+		if (!wordsearch.find(words[i])) continue; //do nothing if unable to find the word
 
-		for (int k = 0; k < row.length(); ++k)
-		{
-			cv::rectangle(image, rects[row[k]], color(i), 2);
+		auto match = wordsearch.getMatchData(0);
 
-			if (k)
-			{
-				int fromX = rects[row[k-1]].x + (rects[row[k-1]].width / 2);
-				int fromY = rects[row[k-1]].y + (rects[row[k-1]].height / 2);
-				int toX = rects[row[k]].x + (rects[row[k]].width / 2);
-				int toY = rects[row[k]].y + (rects[row[k]].height / 2);
+		auto begRect = letterRects[match.y][match.x];
+		auto endRect = letterRects[match.height][match.width];
 
-				cv::arrowedLine(
-					image,
-					cv::Point(fromX, fromY),
-					cv::Point(toX, toY),
-					color(i),
-					2
-				);
-			}
+		cv::Point p1 (begRect.x + (begRect.width / 2), begRect.y + (begRect.height / 2));
+		cv::Point p2 (endRect.x + (endRect.width / 2), endRect.y + (endRect.height / 2));
 
-			cv::putText(
-				image,
-				zpath(row[k]).cstring(),
-				cv::Point(rects[row[k]].x, rects[row[k]].y),
-				cv::FONT_HERSHEY_DUPLEX,
-				1,
-				color(row[k]),
-				1
-			);
-		}
+		encircle(image, p1, p2, color(i), 2, (begRect.width + begRect.height + endRect.width + endRect.height)/8);
+		cv::rectangle(image, wordRects[i], color(i), 2);
 	}
 
 	//Resize image to something manageable

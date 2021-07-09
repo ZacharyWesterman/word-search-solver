@@ -41,6 +41,7 @@ public:
 	~wordSearch();
 
 	bool load(z::core::inputStream& input);
+	bool load(const zstring& input);
 	bool loaded() const;
 
 	void clear();
@@ -59,7 +60,7 @@ public:
 	void print(z::core::outputStream& output) const;
 
 
-	int find(const z::core::string<>& text, int occurrence = 0, int color = 8);
+	int find(const z::core::string<>& text, int color = 8);
 
 	int scan(const z::util::dictionary& dict, int minLength, int maxLength = 0, int color = 8);
 };

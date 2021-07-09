@@ -11,9 +11,9 @@
 // #include <opencv2/imgproc/imgproc.hpp>
 // #include <opencv2/objdetect.hpp>
 
-static z::core::string<z::utf8> recognize(const cv::Mat& image, cv::Rect rect, tesseract::TessBaseAPI* ocr, bool oneLetter = false) noexcept
+static zstring recognize(const cv::Mat& image, cv::Rect rect, tesseract::TessBaseAPI* ocr, bool oneLetter = false) noexcept
 {
-	z::core::string<z::utf8> word;
+	zstring word;
 
 	//Convert to grayscale
 
@@ -70,13 +70,9 @@ static z::core::string<z::utf8> recognize(const cv::Mat& image, cv::Rect rect, t
 	return word;
 }
 
-z::core::array<z::core::string<z::utf8> > ocrWords(const cv::Mat& image, const std::vector<cv::Rect>& rects) noexcept
+z::core::array<zstring> ocrWords(tesseract::TessBaseAPI* ocr, const cv::Mat& image, const z::core::array<cv::Rect>& rects) noexcept
 {
-	z::core::array<z::core::string<z::utf8> > result;
-
-	//Start up OCR
-	tesseract::TessBaseAPI* ocr = new tesseract::TessBaseAPI();
-	ocr->Init(NULL, "eng", tesseract::OEM_LSTM_ONLY);
+	z::core::array<zstring> result;
 
 	//Recognize word bank
 	ocr->SetPageSegMode(tesseract::PSM_SINGLE_WORD);
@@ -85,29 +81,20 @@ z::core::array<z::core::string<z::utf8> > ocrWords(const cv::Mat& image, const s
 		result.add(recognize(image, rect, ocr));
 	}
 
-	ocr->End();
-
 	return result;
 }
 
-z::core::array<z::core::string<z::utf8> > ocrLetters(const cv::Mat& image, const std::vector<cv::Rect>& rects) noexcept
+z::core::array<zstring> ocrLetters(tesseract::TessBaseAPI* ocr, const cv::Mat& image, const z::core::array<cv::Rect>& rects) noexcept
 {
-	z::core::array<z::core::string<z::utf8> > result;
-
-	//Start up OCR
-	tesseract::TessBaseAPI* ocr = new tesseract::TessBaseAPI();
-	ocr->Init(NULL, "eng", tesseract::OEM_LSTM_ONLY);
+	z::core::array<zstring> result;
 
 	//Recognize letters
-	int lastY = image.cols;
 	ocr->SetPageSegMode(tesseract::PSM_SINGLE_CHAR);
 	// ocr->SetVariable("tessedit_char_whitelist", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ|10");
 	for (auto rect : rects)
 	{
-		result.add(recognize(image, rect, ocr, true));
+		result.add(recognize(image, rect, ocr, true)[0]);
 	}
-
-	ocr->End();
 
 	return result;
 }

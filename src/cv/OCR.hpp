@@ -6,5 +6,5 @@
 
 #include <z/core.hpp>
 
-z::core::array< z::core::string<z::utf8> > ocrWords(const cv::Mat& image, const std::vector<cv::Rect>& wordBank_rects) noexcept;
-z::core::array<z::core::string<z::utf8> > ocrLetters(const cv::Mat& image, const std::vector<cv::Rect>& rects) noexcept;
+z::core::array<zstring> ocrWords(tesseract::TessBaseAPI* ocr, const cv::Mat& image, const z::core::array<cv::Rect>& rects) noexcept;
+z::core::array<zstring> ocrLetters(tesseract::TessBaseAPI* ocr, const cv::Mat& image, const z::core::array<cv::Rect>& rects) noexcept;
