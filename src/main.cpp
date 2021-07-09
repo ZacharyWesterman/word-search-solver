@@ -45,29 +45,55 @@ int main(int argc, char** argv)
 	auto rects = pointsOfInterest(image);
 
 	//draw rectangles
-	int i=0;
-	for (auto& rect : rects)
-	{
-		cv::rectangle(image, rect, color(i++), 2);
-	}
+	// int i=0;
+	// for (auto& rect : rects)
+	// {
+	// 	cv::rectangle(image, rect, color(i++), 2);
+	// }
 
 	//draw lines connecting rectangles
 	auto connections = connectNearest(rects);
+	"{"_u8.writeln(stdout);
+	for (auto& i : connections)
+	{
+		"  {"_u8.write(stdout);
+		for (auto k : i) (" "_u8 + k).write(stdout);
+		" }"_u8.writeln(stdout);
+	}
+	"}"_u8.writeln(stdout);
 	for (int i = 0; i < connections.length(); ++i)
 	{
-		for (int k : connections[i])
-		{
-			int fromX = rects[i].x + (rects[i].width / 2);
-			int fromY = rects[i].y + (rects[i].height / 2);
-			int toX = rects[k].x + (rects[k].width / 2);
-			int toY = rects[k].y + (rects[k].height / 2);
+		// if (i != connections.length()-4) continue;
+		auto& row = connections[i];
 
-			cv::arrowedLine(
+		for (int k = 0; k < row.length(); ++k)
+		{
+			cv::rectangle(image, rects[row[k]], color(i), 2);
+
+			if (k)
+			{
+				int fromX = rects[row[k-1]].x + (rects[row[k-1]].width / 2);
+				int fromY = rects[row[k-1]].y + (rects[row[k-1]].height / 2);
+				int toX = rects[row[k]].x + (rects[row[k]].width / 2);
+				int toY = rects[row[k]].y + (rects[row[k]].height / 2);
+
+				cv::arrowedLine(
+					image,
+					cv::Point(fromX, fromY),
+					cv::Point(toX, toY),
+					color(i),
+					2
+				);
+			}
+
+			cv::putText(
 				image,
-				cv::Point(fromX, fromY),
-				cv::Point(toX, toY),
-				color(i),
-				2
+				zpath(row[k]).cstring(),
+				cv::Point(rects[row[k]].x, rects[row[k]].y),
+				cv::FONT_HERSHEY_DUPLEX,
+				1,
+				color(row[k]),
+				1
 			);
 		}
 	}

@@ -1,3 +1,4 @@
+/*
 #include "processImage.hpp"
 
 #include <z/file.hpp>
@@ -167,3 +168,4 @@ cv::Mat processImage(const cv::Mat& inputImage, wordSearch& grid, bool resize, b
 
 	return image;
 }
+*/
