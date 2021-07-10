@@ -49,6 +49,7 @@ static zstring recognize(const cv::Mat& image, cv::Rect rect, tesseract::TessBas
 	word.replace(L"°","O");
 	word.replace(L"¢","C");
 	word.replace('=','E');
+	word.replace("OV",'Y');
 
 	// z::system::stdout stdout;
 	// word.trim().writeln(stdout);
@@ -78,7 +79,8 @@ z::core::array<zstring> ocrWords(tesseract::TessBaseAPI* ocr, const cv::Mat& ima
 	ocr->SetPageSegMode(tesseract::PSM_SINGLE_WORD);
 	for (auto rect : rects)
 	{
-		result.add(recognize(image, rect, ocr));
+		auto str = recognize(image, rect, ocr);
+		if (str.length() > 2) result.add(str);
 	}
 
 	return result;
@@ -90,7 +92,7 @@ z::core::array<zstring> ocrLetters(tesseract::TessBaseAPI* ocr, const cv::Mat& i
 
 	//Recognize letters
 	ocr->SetPageSegMode(tesseract::PSM_SINGLE_CHAR);
-	// ocr->SetVariable("tessedit_char_whitelist", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ|10");
+	// ocr->SetVariable("tessedit_char_whitelist", "abcdefghijklmnopqrstuvwxyABCDEFGHIJKLMNOPQRSTUVWXYZ|10");
 	for (auto rect : rects)
 	{
 		result.add(recognize(image, rect, ocr, true)[0]);

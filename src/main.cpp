@@ -50,6 +50,7 @@ int main(int argc, char** argv)
 		return 2;
 	}
 
+
 	//get points of interest
 	auto rects = pointsOfInterest(image);
 
@@ -72,9 +73,25 @@ int main(int argc, char** argv)
 	{
 		auto letters = ocrLetters(ocr, image, row);
 		if (letterText.length()) letterText += "\n";
+		// for (auto i : letters)
+		// {
+		// 	letterText += i[0];
+		// 	std::cout << i << ' ';
+		// }
+		// std::cout << std::endl;
 		letterText += z::core::join(letters, "");
+
+		// for (int i=0; i<row.length(); ++i)
+		// {
+		// 	cv::rectangle(
+		// 		image,
+		// 		row[i],
+		// 		color(i),
+		// 		2
+		// 	);
+		// }
 	}
-	std::cout << letterText << std::endl << std::endl;
+	// std::cout << letterText << std::endl;
 
 	//Build word bank
 	auto words = ocrWords(ocr, image, wordRects);
@@ -86,11 +103,23 @@ int main(int argc, char** argv)
 	//init word search
 	wordSearch wordsearch;
 	wordsearch.load(letterText);
+	wordsearch.print(stdout);
 
 	//highlight word bank and successful matches
 	for (int i=0; i<words.length(); ++i)
 	{
-		if (!wordsearch.find(words[i])) continue; //do nothing if unable to find the word
+		if (!words[i].length()) continue;
+		if (!wordsearch.find(words[i])) //if unable to find the word
+		{
+			cv::line(
+				image,
+				cv::Point(wordRects[i].x, wordRects[i].y + wordRects[i].height / 2),
+				cv::Point(wordRects[i].x + wordRects[i].width, wordRects[i].y + wordRects[i].height / 2),
+				CV_RGB(255,0,0),
+				1
+			);
+			continue;
+		}
 
 		auto match = wordsearch.getMatchData(0);
 

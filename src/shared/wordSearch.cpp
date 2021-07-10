@@ -37,7 +37,7 @@ bool wordSearch::load(z::core::inputStream& input)
 	if (!len) return false;
 	for (int i=1; i<letterGrid.length(); ++i)
 	{
-		if (letterGrid[i].length() != len) return false;
+		if (letterGrid[i].length() > len) len = letterGrid[i].length();
 	}
 
 	//initialize data
