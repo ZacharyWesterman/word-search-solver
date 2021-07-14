@@ -43,7 +43,7 @@ int main(int argc, char** argv)
 	}
 
 	std::string imagePath = argv[1];
-	cv::Mat image = cv::imread(imagePath, CV_LOAD_IMAGE_COLOR);
+	cv::Mat image = cv::imread(imagePath, cv::IMREAD_COLOR);
 	if (!image.data)
 	{
 		(zstring("Error: Unable to load ")+imagePath.c_str()).writeln(stderr);
@@ -65,6 +65,7 @@ int main(int argc, char** argv)
 
 	//Start up text recognition
 	tesseract::TessBaseAPI* ocr = new tesseract::TessBaseAPI();
+	ocr->SetVariable("tessedit_char_whitelist", "abcdefghijklmnopqrstuvwxyABCDEFGHIJKLMNOPQRSTUVWXYZ");
 	ocr->Init(NULL, "eng", tesseract::OEM_LSTM_ONLY);
 
 	//Build puzzle text
@@ -73,29 +74,11 @@ int main(int argc, char** argv)
 	{
 		auto letters = ocrLetters(ocr, image, row);
 		if (letterText.length()) letterText += "\n";
-		// for (auto i : letters)
-		// {
-		// 	letterText += i[0];
-		// 	std::cout << i << ' ';
-		// }
-		// std::cout << std::endl;
 		letterText += z::core::join(letters, "");
-
-		// for (int i=0; i<row.length(); ++i)
-		// {
-		// 	cv::rectangle(
-		// 		image,
-		// 		row[i],
-		// 		color(i),
-		// 		2
-		// 	);
-		// }
 	}
-	// std::cout << letterText << std::endl;
 
 	//Build word bank
 	auto words = ocrWords(ocr, image, wordRects);
-	// std::cout << z::core::join(words, "\n") << std::endl;
 
 	//Done with text recognition
 	ocr->End();
