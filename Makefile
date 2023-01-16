@@ -34,8 +34,8 @@ UTILNAME = src/utils/dict
 
 default: $(NAME) $(DICTOUT) $(UTILNAME) $(TXTNAME)
 
-$(NAME): src/main.o $(OBJS)
-	$(LN) -o $@ $^ $(LFLAGS)
+$(NAME): src/main.o $(OBJS) $(DICTOUT)
+	$(LN) -o $@ $< $(OBJS) $(LFLAGS)
 
 %.o: %.cpp %.hpp
 	$(CC) $(CFLAGS) -o $@ -c $<
@@ -46,11 +46,11 @@ src/main.o: src/main.cpp
 src/solve.o: src/solve.cpp
 	$(CC) $(CFLAGS) -o $@ -c $<
 
-$(TXTNAME): src/solve.o src/shared/wordSearch.o
-	$(LN) -o $@ $^ -lzed
+$(TXTNAME): src/solve.o src/shared/wordSearch.o $(DICTOUT)
+	$(LN) -o $@ $< src/shared/wordSearch.o -lzed
 
 $(UTILNAME): $(UTILNAME).cpp
-	$(CC) $(CFLAGS) -lzed -o $@ $<
+	$(CC) $(CFLAGS) $< -lzed -o $@
 
 $(DICTOUT): $(UTILNAME) $(DICTIN)
 	mkdir -p data
