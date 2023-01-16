@@ -1,5 +1,5 @@
-NAME = wssolve-gui
-TXTNAME = wssolve-cli
+NAME = wssolve-img
+TXTNAME = wssolve-txt
 
 SRCS = $(wildcard src/cv/*.cpp src/shared/*.cpp)
 OBJS = $(patsubst %.cpp,%.o,$(SRCS))
