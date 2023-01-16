@@ -8,6 +8,7 @@ If this is a one-time thing, or the image is exceptionally messy, I would sugges
 # Image Processing Dependencies
 * [OpenCV](https://opencv.org) 2.4: Check their website for installation instructions.
 * [tesseract-ocr](https://github.com/tesseract-ocr/tesseract): Your distro's package manager should have something like `tesseract-ocr` or `libtesseract-ocr`. If not, you can always build from source.
+
 Note that the above are only needed by `wssolve-img`.
 
 # Shared Dependencies:
@@ -15,7 +16,7 @@ Note that the above are only needed by `wssolve-img`.
 * [libzed](https://github.com/ZacharyWesterman/libzed): Mostly just for text manipulation. See the readme for installation instructions.
 * Lastly, Make and g++ are required.
 
-Once the above are satisfied, you should be able to compile just by running `make`.
+Once all dependencies are satisfied, you should be able to compile just by running `make wssolve-txt` and/or `make wssolve-img`.
 This should result in an executable "wssolve". To solve a word search do something like
 ```
 ./wssolve-img /path/to/image
@@ -26,7 +27,7 @@ or
 ```
 
 ### Notes for processing images of word searches
-The word search currently require a border around the letters, and no other borders (the word bank is assumed to be outside of the border). This program will **NOT** work with oddly-shaped word searches (e.g. triangular).
+Accurately processing the word search currently requires there to be a border around the letters, and no other borders (the word bank is assumed to be outside of the border). This program will **NOT** work with oddly-shaped word searches (e.g. triangular).
 
 For best results, follow these guidelines with images of word searches:
 * The letters in the word search should be well-aligned.
